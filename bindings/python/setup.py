@@ -136,7 +136,7 @@ def build_libraries():
     shutil.copy(os.path.join(ROOT_DIR, "../../COPYING"), LIBS_DIR)
 
     # copy the completed build folder to distributable directory
-    shutil.make_archive(os.path.join(DIST_DIR, 'keystone-%s.zip' % SYSTEM), LIBS_DIR)
+    shutil.make_archive(os.path.join(DIST_DIR, 'keystone-%s' % SYSTEM), 'zip', LIBS_DIR)
 
     # back to root dir
     os.chdir(cur_dir)
