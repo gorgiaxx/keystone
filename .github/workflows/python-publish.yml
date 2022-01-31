@@ -1,4 +1,4 @@
-name: PyPI 📦 Distribution
+name: Python Distribution
 
 on: [push]
 
@@ -55,26 +55,30 @@ jobs:
       with:
          path: ${{ github.workspace }}/bindings/python/dist/*
 
-  publish:
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags')
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: artifact
-          path: dist
-
-      - name: Publish distribution 📦 to test PyPI
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          user: __token__
-          password: ${{ secrets.testpypi_pass }}
-          repository_url: https://test.pypi.org/legacy/
-
-      - name: Publish distribution 📦 to PyPI
-        if: ${{ success() }}
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          user: __token__
-          password: ${{ secrets.pypi_pass }}
+#
+# NOTE: this repo does not need to publish Keystone to PyPI
+#
+#  publish:
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    if: startsWith(github.ref, 'refs/tags')
+#    steps:
+#      - uses: actions/download-artifact@v2
+#        with:
+#          name: artifact
+#          path: dist
+#
+#      - name: Publish distribution 📦 to test PyPI
+#        uses: pypa/gh-action-pypi-publish@master
+#        with:
+#          user: __token__
+#          password: ${{ secrets.testpypi_pass }}
+#          repository_url: https://test.pypi.org/legacy/
+#
+#      - name: Publish distribution 📦 to PyPI
+#        if: ${{ success() }}
+#        uses: pypa/gh-action-pypi-publish@master
+#        with:
+#          user: __token__
+#          password: ${{ secrets.pypi_pass }}
+#
