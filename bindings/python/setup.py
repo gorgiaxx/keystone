@@ -20,7 +20,7 @@ from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
 from setuptools.command.develop import develop as _develop
 
 #VERSION = '0.9.2' + 'rc1' + '.post2'
-VERSION = '0.9.2'
+VERSION = '0.9.3' + '-patching'
 SYSTEM = sys.platform
 IS_64BITS = platform.architecture()[0] == '64bit'
 
@@ -29,6 +29,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LIBS_DIR = os.path.join(ROOT_DIR, 'keystone')
 SRC_DIR = os.path.join(ROOT_DIR, 'src')
 BUILD_DIR = os.path.join(SRC_DIR, 'build')
+DIST_DIR = os.path.join(ROOT_DIR, 'dist')
 
 if SYSTEM == 'darwin':
     LIBRARY_FILE = "libkeystone.dylib"
@@ -129,6 +130,14 @@ def build_libraries():
                 shutil.copy(os.path.join(obj_dir, LIBRARY_FILE), LIBS_DIR)
             except:
                 shutil.copy(os.path.join(obj64_dir, LIBRARY_FILE), LIBS_DIR)
+
+    # copy license / related legal info for distribution
+    shutil.copy(os.path.join(ROOT_DIR, "LICENSE.TXT"), LIBS_DIR)
+    shutil.copy(os.path.join(ROOT_DIR, "../../COPYING"), LIBS_DIR)
+
+    # copy the completed build folder to distributable directory
+    shutil.make_archive(os.path.join(DIST_DIR, 'keystone-%s.zip' % SYSTEM), LIBS_DIR)
+
     # back to root dir
     os.chdir(cur_dir)
 
