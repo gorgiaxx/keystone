@@ -112,7 +112,7 @@ def build_libraries():
         winobj_dir = os.path.join(BUILD_DIR, 'llvm', 'bin')  
         shutil.copy(os.path.join(winobj_dir, LIBRARY_FILE), LIBS_DIR)
     else:
-        cmd = ['sh', '../make-share.sh', 'lib_only']
+        cmd = ['sh', '../make-share.sh', 'macos-universal', 'lib_only']
         subprocess.call(cmd)
         if SYSTEM == "cygwin":
             obj_dir = os.path.join(BUILD_DIR, 'llvm', 'bin')

@@ -25,7 +25,7 @@ while [ "$1" != "" ]; do
       ARCH=''	# do not build MacOS universal binaries
       ;;
     macos-universal)
-      ARCH='i386;x86_64'	# build MacOS universal binaries
+      ARCH='arm64;x86_64'	# build MacOS universal binaries
       ;;
     *)
       echo "ERROR: unknown parameter \"$1\""
