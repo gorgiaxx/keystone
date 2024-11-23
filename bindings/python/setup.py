@@ -20,7 +20,7 @@ from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
 from setuptools.command.develop import develop as _develop
 
 #VERSION = '0.9.2' + 'rc1' + '.post2'
-VERSION = '0.9.3' + '-patching'
+VERSION = '0.9.3'
 SYSTEM = sys.platform
 IS_64BITS = platform.architecture()[0] == '64bit'
 
@@ -218,7 +218,7 @@ Keystone is available under a dual license:
 setup(
     provides=['keystone'],
     packages=['keystone'],
-    name='keystone-engine',
+    name='keystone-engine-patching',
     version=VERSION,
     author='Nguyen Anh Quynh',
     author_email='aquynh@gmail.com',
