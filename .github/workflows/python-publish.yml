@@ -53,7 +53,7 @@ jobs:
              cd bindings/python && python setup.py build
         fi
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
          path: ${{ github.workspace }}/bindings/python/dist/*
 
