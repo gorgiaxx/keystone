@@ -186,7 +186,7 @@ if 'bdist_wheel' in sys.argv and '--plat-name' not in sys.argv:
         sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_'))
 
 
-long_desc = '''
+long_desc = r'''
 Keystone is a lightweight multi-platform, multi-architecture assembler framework.
 It offers some unparalleled features:
 
