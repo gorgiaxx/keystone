@@ -171,18 +171,15 @@ if 'bdist_wheel' in sys.argv and '--plat-name' not in sys.argv:
     sys.argv.insert(idx, '--plat-name')
     name = get_platform()
     if 'linux' in name:
-        # linux_* platform tags are disallowed because the python ecosystem is fubar
-        # linux builds should be built in the centos 5 vm for maximum compatibility
-        # see https://github.com/pypa/manylinux
-        # see also https://github.com/angr/angr-dev/blob/master/bdist.sh
         sys.argv.insert(idx + 1, 'manylinux1_' + platform.machine())
     elif 'mingw' in name:
         if IS_64BITS:
             sys.argv.insert(idx + 1, 'win_amd64')
         else:
             sys.argv.insert(idx + 1, 'win32')
+    elif 'darwin' in name:
+        sys.argv.insert(idx + 1, 'macosx_' + platform.machine())
     else:
-        # https://www.python.org/dev/peps/pep-0425/
         sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_'))
 
 
@@ -218,7 +215,7 @@ Keystone is available under a dual license:
 setup(
     provides=['keystone'],
     packages=['keystone'],
-    name='keystone-engine-patching',
+    name='keystone-engine',
     version=VERSION,
     author='Nguyen Anh Quynh',
     author_email='aquynh@gmail.com',
@@ -247,6 +244,6 @@ setup(
     include_package_data=True,
     is_pure=False,
     package_data={
-        'keystone': ['*']
+        'keystone': ['*', '*.dylib', '*.so', '*.dll']
     }
 )

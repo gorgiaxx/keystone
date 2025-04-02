@@ -6,7 +6,9 @@ else
 OBJDIR = $(abspath $(BUILDDIR))/obj/bindings/python
 endif
 
- 
+# Get Python path from environment or use default
+PYTHON_PATH ?= /opt/homebrew/bin/python3.11
+
 .PHONY: gen_const install install3 clean
 
 gen_const:
@@ -80,4 +82,16 @@ check:
 		echo Check $$t ... ; \
 		./$$t > /dev/null && echo OK || echo FAILED; \
 	done
+
+# Build wheel package
+wheel:
+	rm -rf $(OBJDIR) src/ dist/
+	rm -rf prebuilt/win64/keystone.dll
+	rm -rf prebuilt/win32/keystone.dll
+	$(PYTHON_PATH) setup.py bdist_wheel
+
+# Build wheel package with Python3
+wheel3:
+	rm -rf $(OBJDIR) src/ dist/
+	python3 setup.py bdist_wheel
 
