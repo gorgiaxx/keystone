@@ -1,6 +1,8 @@
-name: PyPI 📦 Distribution
+name: Python Distribution
 
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -9,12 +11,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        platform: [x32, x64]
+        platform: [x64]
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -36,45 +38,50 @@ jobs:
       shell: bash 
       run: |
         if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'windows-latest' ]; then
-             cd bindings/python && python setup.py build -p win32 bdist_wheel -p win32
+             cd bindings/python && python setup.py build -p win32
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
              docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
              chmod +x ./dockcross
-             ./dockcross bindings/python/build_wheel.sh
+             ./dockcross bindings/python/build.sh
         elif [ ${{ matrix.platform }} == 'x64' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
              docker run --rm -v `pwd`/:/work dockcross/manylinux1-x64 > ./dockcross
              chmod +x ./dockcross
-             ./dockcross bindings/python/build_wheel.sh
+             ./dockcross bindings/python/build.sh
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'macos-latest' ]; then
              cd bindings/python && python setup.py sdist
         else
-             cd bindings/python && python setup.py bdist_wheel
+             cd bindings/python && python setup.py build
         fi
 
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
          path: ${{ github.workspace }}/bindings/python/dist/*
+         name: artifact_${{ matrix.os }}
 
-  publish:
-    needs: [build]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags')
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: artifact
-          path: dist
-
-      - name: Publish distribution 📦 to test PyPI
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          user: __token__
-          password: ${{ secrets.testpypi_pass }}
-          repository_url: https://test.pypi.org/legacy/
-
-      - name: Publish distribution 📦 to PyPI
-        if: ${{ success() }}
-        uses: pypa/gh-action-pypi-publish@master
-        with:
-          user: __token__
-          password: ${{ secrets.pypi_pass }}
+#
+# NOTE: this repo does not need to publish Keystone to PyPI
+#
+#  publish:
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    if: startsWith(github.ref, 'refs/tags')
+#    steps:
+#      - uses: actions/download-artifact@v2
+#        with:
+#          name: artifact
+#          path: dist
+#
+#      - name: Publish distribution 📦 to test PyPI
+#        uses: pypa/gh-action-pypi-publish@master
+#        with:
+#          user: __token__
+#          password: ${{ secrets.testpypi_pass }}
+#          repository_url: https://test.pypi.org/legacy/
+#
+#      - name: Publish distribution 📦 to PyPI
+#        if: ${{ success() }}
+#        uses: pypa/gh-action-pypi-publish@master
+#        with:
+#          user: __token__
+#          password: ${{ secrets.pypi_pass }}
+#

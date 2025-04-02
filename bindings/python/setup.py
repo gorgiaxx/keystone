@@ -29,6 +29,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LIBS_DIR = os.path.join(ROOT_DIR, 'keystone')
 SRC_DIR = os.path.join(ROOT_DIR, 'src')
 BUILD_DIR = os.path.join(SRC_DIR, 'build')
+DIST_DIR = os.path.join(ROOT_DIR, 'dist')
 
 if SYSTEM == 'darwin':
     LIBRARY_FILE = "libkeystone.dylib"
@@ -111,7 +112,7 @@ def build_libraries():
         winobj_dir = os.path.join(BUILD_DIR, 'llvm', 'bin')  
         shutil.copy(os.path.join(winobj_dir, LIBRARY_FILE), LIBS_DIR)
     else:
-        cmd = ['sh', '../make-share.sh', 'lib_only']
+        cmd = ['sh', '../make-share.sh', 'macos-universal', 'lib_only']
         subprocess.call(cmd)
         if SYSTEM == "cygwin":
             obj_dir = os.path.join(BUILD_DIR, 'llvm', 'bin')
@@ -129,6 +130,14 @@ def build_libraries():
                 shutil.copy(os.path.join(obj_dir, LIBRARY_FILE), LIBS_DIR)
             except:
                 shutil.copy(os.path.join(obj64_dir, LIBRARY_FILE), LIBS_DIR)
+
+    # copy license / related legal info for distribution
+    shutil.copy(os.path.join(ROOT_DIR, "LICENSE.TXT"), LIBS_DIR)
+    shutil.copy(os.path.join(ROOT_DIR, "../../COPYING"), LIBS_DIR)
+
+    # copy the completed build folder to distributable directory
+    shutil.copytree(LIBS_DIR, os.path.join(DIST_DIR, 'keystone_%s' % SYSTEM))
+
     # back to root dir
     os.chdir(cur_dir)
 
@@ -177,7 +186,7 @@ if 'bdist_wheel' in sys.argv and '--plat-name' not in sys.argv:
         sys.argv.insert(idx + 1, name.replace('.', '_').replace('-', '_'))
 
 
-long_desc = '''
+long_desc = r'''
 Keystone is a lightweight multi-platform, multi-architecture assembler framework.
 It offers some unparalleled features:
 
@@ -209,7 +218,7 @@ Keystone is available under a dual license:
 setup(
     provides=['keystone'],
     packages=['keystone'],
-    name='keystone-engine',
+    name='keystone-engine-patching',
     version=VERSION,
     author='Nguyen Anh Quynh',
     author_email='aquynh@gmail.com',
